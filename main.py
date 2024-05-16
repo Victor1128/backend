@@ -9,7 +9,7 @@ class Text(BaseModel):
     content: str | None = None
 
 
-model = Model('robert', 'models/model_robert_1.pth')
+model = Model('robert', 'models/model_weights_2.pth')
 
 app = FastAPI()
 

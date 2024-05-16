@@ -1,4 +1,6 @@
 import torch
+from transformers import AutoTokenizer
+from transformers import BertForSequenceClassification
 
 
 class Model:
@@ -15,11 +17,10 @@ class Model:
 
     def initialize_model(self):
         if self.model_type == 'robert':
-            from transformers import AutoTokenizer
-
             self.tokenizer = AutoTokenizer.from_pretrained("readerbench/RoBERT-base")
-            self.model = torch.load(self.model_path, map_location=torch.device('cpu'))
-            # self.load()
+            # self.model = torch.load(self.model_path, map_location=torch.device('cpu'))
+            self.model = BertForSequenceClassification.from_pretrained("readerbench/RoBERT-base", num_labels=2)
+            self.load()
 
     def tokenize_texts(self, texts):
         return self.tokenizer.batch_encode_plus(texts, padding='longest', truncation=True, max_length=128,
