@@ -19,8 +19,7 @@ class Model:
         if self.model_type == 'robert':
             self.tokenizer = AutoTokenizer.from_pretrained("readerbench/RoBERT-base")
             # self.model = torch.load(self.model_path, map_location=torch.device('cpu'))
-            self.model = BertForSequenceClassification.from_pretrained("readerbench/RoBERT-base", num_labels=2, resume_download=None)
-            self.load()
+            self.model = BertForSequenceClassification.from_pretrained("models", num_labels=2, resume_download=None)
 
     def tokenize_texts(self, texts):
         return self.tokenizer.batch_encode_plus(texts, padding='longest', truncation=True, max_length=128,
