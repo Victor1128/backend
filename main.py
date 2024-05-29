@@ -8,10 +8,10 @@ from model import Model
 
 class Text(BaseModel):
     title: str
-    content: str | None = None
+    content: str
 
 
-model = Model('robert', 'models/model_weights_2.pth')
+model = Model('models')
 
 app = FastAPI()
 
@@ -39,9 +39,11 @@ async def say_hello(name: str):
 
 @app.post("/predict")
 async def predict(text: Text):
-    model.fit([text.title])
+    model.load_data([text.title], [text.content])
+    predictions = model.predict()
+    print(predictions)
     return {
-        "predictions": model.predict()
+        "predictions": predictions
     }
 
 if __name__ == "__main__":

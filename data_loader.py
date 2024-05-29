@@ -39,7 +39,6 @@ class DataLoader:
             .replace("î", "i", regex=True).replace("ș", "s", regex=True).replace("ț", "t", regex=True).replace("Ă", "A", regex=True)\
             .replace("Â", "A", regex=True).replace("Î", "I", regex=True).replace("Ș", "S", regex=True).replace("Ț", "T", regex=True)
 
-
     def load_custom_data(self, df):
         self.data = df
 
@@ -147,7 +146,7 @@ class DataLoader:
         Add the first chars_num characters of the content to the title.
         '''
         def f(text):
-            if pd.isnull(text):
+            if pd.isnull(text) or len(text) == 0:
                 return ''
             final = ""
             for sent in text.split('.'):

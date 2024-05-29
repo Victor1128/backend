@@ -1,7 +1,8 @@
 import torch
 from transformers import AutoTokenizer
 from transformers import BertForSequenceClassification
-
+import pandas as pd
+from data_loader import DataLoader
 
 class Model:
 
@@ -22,11 +23,18 @@ class Model:
         return self.tokenizer.batch_encode_plus(texts, padding='longest', truncation=True, max_length=128,
                                                 return_tensors="pt")
 
-    def clean_input(self, texts):
-        return texts
+    def clean_input(self, titles, contents):
+        data = pd.DataFrame({'title': titles, 'content': contents})
+        data_loader = DataLoader()
+        data_loader.load_custom_data(data)
+        data_loader.add_content_to_title(1000)
+        data_loader.remove_cedilla()
+        data_loader.remove_html_tags()
+        data_loader.remove_multiple_spaces()
+        return data_loader.data['text'].tolist()
 
-    def fit(self, test_texts):
-        test_texts = self.clean_input(test_texts)
+    def load_data(self, titles, contents):
+        test_texts = self.clean_input(titles, contents)
         self.tokenized_texts = self.tokenize_texts(test_texts)
         self.text_test = self.tokenized_texts['input_ids']
         self.attention_masks_test = self.tokenized_texts['attention_mask']
