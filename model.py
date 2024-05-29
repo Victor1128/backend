@@ -30,6 +30,7 @@ class Model:
         data_loader.add_content_to_title(1000)
         data_loader.remove_cedilla()
         data_loader.remove_html_tags()
+        data_loader.remove_new_lines()
         data_loader.remove_multiple_spaces()
         return data_loader.data['text'].tolist()
 

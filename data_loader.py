@@ -176,6 +176,9 @@ class DataLoader:
     def remove_html_tags(self):
         self.data['text'] = self.data['text'].replace(r'<[^>]+>', '', regex=True)
 
+    def remove_new_lines(self):
+        self.data['text'] = self.data['text'].replace(r'\n', ' ', regex=True)
+
     def remove_stop_words(self):
         self.data['text'] = self.data['text'].apply(
             lambda x: ' '.join([token for token in x.split() if token == 'nu' or token not in self.stop_words]))
