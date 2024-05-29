@@ -5,28 +5,22 @@ from transformers import BertForSequenceClassification
 
 class Model:
 
-    def __init__(self, model_type, model_path):
+    def __init__(self, model_path):
         self.attention_masks_test = None
         self.text_test = None
         self.tokenized_texts = None
         self.tokenizer = None
         self.model = None
         self.model_path = model_path
-        self.model_type = model_type
         self.initialize_model()
 
     def initialize_model(self):
-        if self.model_type == 'robert':
-            self.tokenizer = AutoTokenizer.from_pretrained("readerbench/RoBERT-base")
-            # self.model = torch.load(self.model_path, map_location=torch.device('cpu'))
-            self.model = BertForSequenceClassification.from_pretrained("models", num_labels=2, resume_download=None)
+        self.tokenizer = AutoTokenizer.from_pretrained("readerbench/RoBERT-base")
+        self.model = BertForSequenceClassification.from_pretrained("models", num_labels=2, resume_download=None)
 
     def tokenize_texts(self, texts):
         return self.tokenizer.batch_encode_plus(texts, padding='longest', truncation=True, max_length=128,
                                                 return_tensors="pt")
-
-    def load(self):
-        self.model.load_state_dict(torch.load(self.model_path, map_location=torch.device('cpu')))
 
     def clean_input(self, texts):
         return texts
