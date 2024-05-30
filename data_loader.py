@@ -1,8 +1,5 @@
 import pandas as pd
-from stop_words import get_stop_words
-from string import punctuation
 import re
-import spacy
 
 
 class DataLoader:
@@ -17,10 +14,6 @@ class DataLoader:
         self.validation_df = None
         self.test_df = None
         self.train_df = None
-        self.punctuation = punctuation.replace('$', '').replace('-', '')
-        self.stop_words = get_stop_words('ro')
-        self.ner_labels = ['DATETIME', 'EVENT', 'GPE', 'LANGUAGE', 'LOC', 'MONEY', 'NAT_REL_POL', 'NUMERIC_VALUE',
-                           'ORGANIZATION', 'PERIOD', 'PERSON', 'QUANTITY', 'WORK_OF_ART']
         self.data_path = data_path
         if data_path:
             self.load_data()
@@ -48,47 +41,6 @@ class DataLoader:
         '''
         self.data = data
 
-    def preprocess_raw_data(self):
-        self.add_first_sentence_to_title()
-        self.remove_nan()
-        if len(self.data) == 0:
-            raise ValueError('The data is empty')
-        self.remove_cedilla()
-        self.remove_html_tags()
-        self.tokenize_data()
-        self.add_ner_labels()
-        self.remove_stop_words()
-        self.remove_punctuation()
-        self.remove_multiple_spaces()
-        return self.data
-
-    def tokenize_data(self):
-        '''
-        Tokenize the data
-        '''
-        nlp = spacy.load('ro_core_news_md')
-        self.tokenized_data = []
-        for i, text in enumerate(self.data['text']):
-            print(f'\rTokenizing {i + 1}/{len(self.data)}', end='')
-            self.tokenized_data.append(nlp(text))
-        print()
-
-    def add_ner_labels(self):
-        final_texts = []
-        for tokenized_text in self.tokenized_data:
-            last_label = None
-            text = []
-            for token in tokenized_text:
-                if token.ent_type_ in self.ner_labels:
-                    if token.ent_type_ != last_label:
-                        text.append(f'${token.ent_type_}$')
-                # elif not token.is_stop:
-                #     text.append(token.text)
-                else:
-                    text.append(token.text)
-                last_label = token.ent_type_
-            final_texts.append(' '.join(text))
-        self.data['text'] = final_texts
     def merge_data(self):
         '''
         Merge the data from the dataframes
@@ -179,50 +131,5 @@ class DataLoader:
     def remove_new_lines(self):
         self.data['text'] = self.data['text'].replace(r'\n', ' ', regex=True)
 
-    def remove_stop_words(self):
-        self.data['text'] = self.data['text'].apply(
-            lambda x: ' '.join([token for token in x.split() if token == 'nu' or token not in self.stop_words]))
-        # Remove words that start or end with '-', they are left after stopwords removal
-        self.data['text'] = self.data['text'].apply(
-            lambda x: ' '.join([token for token in x.split() if token[0] != '-' and token[-1] != '-']))
-
-    def remove_punctuation(self):
-        pattern = r'[' + re.escape(self.punctuation) + ']'
-        self.data['text'] = self.data['text'].replace(pattern, '', regex=True)
-
     def remove_cedilla(self):
         self.data['text'] = self.data['text'].replace("ţ", "ț", regex=True).replace("ş", "ș", regex=True).replace("Ţ", "Ț", regex=True).replace("Ş", "Ș", regex=True)
-
-    def serialized_tokenized_data(self):
-        final_texts = []
-        for text in self.tokenized_data:
-            final_texts.append(
-                ' '.join([token.text if token.ent_type_ not in self.ner_labels else '$NE$' for token in text]))
-        self.data['text'] = final_texts
-    def get_balanced_title_and_content_dataset(self):
-        '''
-        :return: formated dataset with columns 'text' and 'label'
-        '''
-        self.add_first_sentence_to_title()
-        self.remove_nan()
-        self.balance_data()
-        self.remove_cedilla()
-        self.remove_multiple_spaces()
-        self.remove_html_tags()
-        self.remove_stop_words()
-        self.remove_punctuation()
-        return self.data
-
-    def get_balanced_title_only_dataset_removing_rows_with_empty_title(self):
-        '''
-        :return: formated dataset with columns 'text' and 'label'
-        '''
-        self.keep_only_title()
-        self.remove_nan()
-        self.balance_data()
-        self.remove_cedilla()
-        self.remove_multiple_spaces()
-        self.remove_html_tags()
-        self.remove_stop_words()
-        self.remove_punctuation()
-        return self.data
