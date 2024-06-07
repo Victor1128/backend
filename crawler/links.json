@@ -1,0 +1,18 @@
+{
+  "digi24": {
+    "mainUrl": "https://www.digi24.ro",
+    "newsUrl": "https://www.digi24.ro/ultimele-stiri"
+  },
+  "hotnews": {
+    "mainUrl": "https://www.hotnews.ro",
+    "newsUrl": "https://www.hotnews.ro/ultima_ora/1"
+  },
+  "antena3": {
+    "mainUrl": "",
+    "newsUrl": "https://www.antena3.ro/stiri"
+  },
+  "protv": {
+    "mainUrl": "",
+    "newsUrl": "https://stirileprotv.ro/ultimele-stiri"
+  }
+}
