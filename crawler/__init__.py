@@ -1,6 +1,6 @@
 import requests
 import json
-from scrappers import *
+from crawler.scrappers import *
 
 
 def get_html(url):
@@ -27,11 +27,9 @@ def get_latest_articles(site):
         scrapper = ProTV()
     else:
         raise ValueError('Site-ul nu este recunoscut')
-    with open ('links.json', 'r') as f:
+    with open ('crawler/links.json', 'r') as f:
         links = json.load(f)
     mainUrl = links[site]['mainUrl']
-    if mainUrl:
-        mainUrl += '/'
     newsUrl = links[site]['newsUrl']
     html = get_html(newsUrl)
     articles = scrapper.get_articles(html)

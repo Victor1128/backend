@@ -3,6 +3,7 @@ from transformers import AutoTokenizer
 from transformers import BertForSequenceClassification
 import pandas as pd
 
+
 class DataLoader:
     def __init__(self, data_path=None):
         '''

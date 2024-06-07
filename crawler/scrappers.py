@@ -78,6 +78,8 @@ class Digi24:
                    ]
         content = ' '.join(content)
         date = datetime.fromisoformat(article.find('time')['datetime'])
+        # make date naive
+        date = date.replace(tzinfo=None)
         return title, content, date
 
 
