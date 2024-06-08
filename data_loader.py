@@ -1,5 +1,4 @@
 import pandas as pd
-import re
 
 
 class DataLoader:
@@ -105,13 +104,11 @@ class DataLoader:
                 sent = sent.strip()
                 if len(final + sent) < chars_num:
                     final += sent + '. '
+                else:
+                    break
             return final
         self.data['text'] = self.data['title'].apply(lambda x: x if not pd.isnull(x) else '') + '. ' + self.data[
             'content'].apply(f)
-        self.data = self.data.drop(columns=['title', 'content'])
-        for i, x in self.data.iterrows():
-            if type(x['text']) == float:
-                print(i, x)
         self.data['text'] = self.data['text'].apply(lambda x: x if not x.startswith('. ') else x[2:])
 
     def balance_data(self):

@@ -1,9 +1,16 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+import asyncio
 from pydantic import BaseModel
 import uvicorn
+import pandas as pd
+import sys
+import os
 
 from model import Model
+from update_news import update_news
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__))))
 
 
 class Text(BaseModel):
@@ -27,6 +34,18 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
+async def update_news_task():
+    while True:
+        update_news()
+        await asyncio.sleep(5 * 60 * 60)
+
+
+@app.on_event("startup")
+def on_startup():
+    asyncio.create_task(update_news_task())
+
+
 @app.get("/")
 async def root():
     return {"message": model.get()}
@@ -39,7 +58,11 @@ async def say_hello(name: str):
 
 @app.post("/predict")
 async def predict(text: Text):
-    model.load_data([text.title], [text.content])
+    df = pd.DataFrame({
+        'title': [text.title],
+        'content': [text.content]
+    })
+    model.load_data(df)
     predictions = model.predict()
     print(predictions)
     return {
