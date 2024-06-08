@@ -38,7 +38,7 @@ app.add_middleware(
 async def update_news_task():
     while True:
         update_news()
-        await asyncio.sleep(5 * 60 * 60)
+        await asyncio.sleep(5 * 60 * 60)    # 5 hours
 
 
 @app.on_event("startup")

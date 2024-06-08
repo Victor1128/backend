@@ -31,5 +31,6 @@ models
 .DS_Store
 
 # models
-models
 /models
+
+satire.csv

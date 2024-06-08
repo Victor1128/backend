@@ -42,7 +42,8 @@ def get_latest_articles(site):
             'title': title,
             'content': content,
             'date': date,
-            'source': site
+            'source': site,
+            'link': mainUrl + link
         })
     return articles
 
