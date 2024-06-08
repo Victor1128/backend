@@ -17,7 +17,7 @@ def update_news():
     last_date = datetime.fromisoformat(links['last_date'])
 
     articles = [x for x in articles if x['date'] > last_date]
-    links['last_date'] = str(max([x['date'] for x in articles]))
+    links['last_date'] = str(max([x['date'] for x in articles])) if len(articles) > 0 else links['last_date']
 
     with open('crawler/links.json', 'w') as f:
         json.dump(links, f, indent=4)

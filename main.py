@@ -51,10 +51,17 @@ async def root():
     return {"message": model.get()}
 
 
-@app.get("/hello/{name}")
-async def say_hello(name: str):
-    return {"message": f"Hello {name}"}
-
+@app.get("/news")
+async def news():
+    try:
+        df = pd.read_csv('satire.csv')
+    except FileNotFoundError:
+        return {
+            "news": []
+        }
+    return {
+        "news": df.to_dict(orient='records')
+    }
 
 @app.post("/predict")
 async def predict(text: Text):
