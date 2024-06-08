@@ -44,10 +44,9 @@ def update_news():
         df_satire = pd.read_csv('satire.csv')
         if len(df_satire) + len(df_final) > 100:
             df_satire.drop(df.tail(len(df_satire) + len(df_final) - 100).index, inplace=True)
-    except:
-        df_satire = pd.DataFrame()
-
-    df_final = pd.concat([df_final, df_satire])
+        df_final = pd.concat([df_final, df_satire])
+    except FileNotFoundError:
+        pass
     df_final.to_csv('satire.csv', index=False)
 
 
