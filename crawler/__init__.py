@@ -32,11 +32,15 @@ def get_latest_articles(site):
     mainUrl = links[site]['mainUrl']
     newsUrl = links[site]['newsUrl']
     html = get_html(newsUrl)
+    if html is None:
+        return []
     articles = scrapper.get_articles(html)
     links = scrapper.get_articles_links(articles)
     articles = []
     for link in links:
         html = get_html(mainUrl + link)
+        if html is None:
+            continue
         title, content, date = scrapper.get_article_title_content_and_date(html)
         articles.append({
             'title': title,

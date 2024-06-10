@@ -17,7 +17,7 @@ class Model:
 
     def initialize_model(self):
         self.tokenizer = AutoTokenizer.from_pretrained("readerbench/RoBERT-base")
-        self.model = BertForSequenceClassification.from_pretrained("models", num_labels=2, resume_download=None)
+        self.model = BertForSequenceClassification.from_pretrained(self.model_path, num_labels=2, resume_download=None)
 
     def tokenize_texts(self, texts):
         return self.tokenizer.batch_encode_plus(texts, padding='longest', truncation=True, max_length=128,
@@ -61,8 +61,3 @@ class Model:
             predictions.extend(probabilities)
 
         return predictions
-
-    def get(self):
-        return 'It worked'
-
-
