@@ -6,6 +6,7 @@ import uvicorn
 import pandas as pd
 import sys
 import os
+from datetime import datetime
 
 from model import Model
 from update_news import update_news
@@ -37,6 +38,7 @@ app.add_middleware(
 
 async def update_news_task():
     while True:
+        print(f"Updating news on {datetime.now()}")
         update_news()
         await asyncio.sleep(5 * 60 * 60)    # 5 hours
 
@@ -44,11 +46,6 @@ async def update_news_task():
 @app.on_event("startup")
 def on_startup():
     asyncio.create_task(update_news_task())
-
-
-@app.get("/")
-async def root():
-    return {"message": model.get()}
 
 
 @app.get("/news")
